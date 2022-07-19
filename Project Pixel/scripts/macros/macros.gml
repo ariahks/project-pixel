@@ -7,3 +7,13 @@
 #macro GAME_WIDTH 320
 #macro GAME_HEIGHT 240
 
+#macro SETTINGS_FILE "settings.dat"
+#macro SETTINGS_FORMAT 0
+
+#macro SAVE_FILE "game.sav"
+#macro SAVE_FORMAT 0
+
+
+#macro START_ROOM Room1
+#macro START_X 112
+#macro START_Y 80
