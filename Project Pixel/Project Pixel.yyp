@@ -1,5 +1,12 @@
 {
   "resources": [
+    {"id":{"name":"MACROS","path":"scripts/MACROS/MACROS.yy",},"order":0,},
+    {"id":{"name":"game","path":"objects/game/game.yy",},"order":0,},
+    {"id":{"name":"obj_mk_solid","path":"objects/obj_mk_solid/obj_mk_solid.yy",},"order":2,},
+    {"id":{"name":"spr_player","path":"sprites/spr_player/spr_player.yy",},"order":0,},
+    {"id":{"name":"spr_mk_solid","path":"sprites/spr_mk_solid/spr_mk_solid.yy",},"order":1,},
+    {"id":{"name":"camera","path":"objects/camera/camera.yy",},"order":3,},
+    {"id":{"name":"player","path":"objects/player/player.yy",},"order":1,},
     {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},"order":0,},
   ],
   "Options": [
@@ -14,7 +21,7 @@
     {"name":"Windows UWP","path":"options/windowsuap/options_windowsuap.yy",},
     {"name":"operagx","path":"options/operagx/options_operagx.yy",},
   ],
-  "defaultScriptType": 0,
+  "defaultScriptType": 1,
   "isEcma": false,
   "configs": {
     "name": "Default",
