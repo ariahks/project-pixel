@@ -4,6 +4,13 @@ if(IS_DEV_BUILD) {
 
 display_set_gui_size(GAME_WIDTH, GAME_HEIGHT);
 
+menu_locked = true;
+pause_for_menu = false;
+
+function is_paused() {
+	return pause_for_menu;
+}
+
 settings = { };
 
 data = { };

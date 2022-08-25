@@ -1,3 +1,5 @@
+if(game.is_paused()) exit;
+
 facing = input_check_press_most_recent(["up", "left", "down", "right"]) ?? facing;
 
 var _dir_x = input_check("right") - input_check("left");

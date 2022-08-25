@@ -13,7 +13,9 @@
 #macro SAVE_FILE "game.sav"
 #macro SAVE_FORMAT 0
 
-
 #macro START_ROOM Room1
 #macro START_X 112
 #macro START_Y 80
+
+#macro DEPTH_UI_TOP -100
+#macro DEPTH_UI_MENU 0
