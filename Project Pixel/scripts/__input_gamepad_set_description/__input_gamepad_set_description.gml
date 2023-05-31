@@ -2,7 +2,7 @@
 
 function __input_gamepad_set_description()
 {
-    if (xinput || __INPUT_ON_XDK)
+    if (xinput || __INPUT_ON_XBOX)
     {
         description = "XInput";
     }
@@ -14,7 +14,7 @@ function __input_gamepad_set_description()
         
         description = "";
         
-        var _work_string = gamepad_get_guid(index);
+        var _work_string = guid;
         var _i = 1;
         repeat(string_length(_work_string) div 2)
         {
@@ -31,16 +31,16 @@ function __input_gamepad_set_description()
     }
     else if (!__INPUT_SDL2_SUPPORT)
     {
-        __input_trace("SDL2 remapping unsupported for this platform");
+        if (!__INPUT_SILENT) __input_trace("SDL2 remapping unsupported for this platform");
         description = gamepad_get_description(index);
     }
     else if (!INPUT_SDL2_REMAPPING)
     {
-        __input_trace("Skipping SDL2 remapping");
+        if (!__INPUT_SILENT) __input_trace("Skipping SDL2 remapping");
         description = gamepad_get_description(index);
     }
     else
     {
-        //We'll try to set our description based on the SDL2 database
+        //We'll try to set our description based on the SDL2 database (Desktop, Android) or type (Steamworks)
     }
 }

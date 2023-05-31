@@ -1,5 +1,5 @@
 SIGNATURE = "47eeed78d46ceff4d28e5f86d99cf51a";
-VERSION = "3cb33df3651600715e7961b29ad0e4ff";
+VERSION = "04c99fd414cd7b69e172b64d4b60b096";
 
 #region Constants
 
@@ -56,8 +56,8 @@ li_info = [];
 
 ///@desc Function for setting the time at which a track loops and the length of the loop.
 ///@param track - The GameMaker asset representing the track you want to loop.
-///@param [start] - The time (in seconds) where the loop begins.
-///@param [end] - The time (in seconds) where the loop ends.
+///@param [start] - The time (in milliseconds) where the loop begins. ~if the legacy option to use seconds instead is enabled, this argument is in seconds.
+///@param [end] - The time (in milliseconds) where the loop ends. ~if the legacy option to use seconds instead is enabled, this argument is in seconds.
 function bgm_set_loop_info(_track, _start = undefined, _end = undefined) {
 	for(var i=0;i<array_length(li_tracks);i++) {
 		if(li_tracks[i] == _track) {
@@ -153,13 +153,15 @@ function bgm_stop(_fade = 0) {
 ///@param [fade] - The time (in milliseconds) over which the track fades out.
 function bgm_pause(_fade = 0) {
 	if(bgm_is_playing()) {
-		music_paused_time = audio_sound_get_track_position(music_inst);
+		if(__AriahAudioLibrary__LEGACY_USE_SECONDS_IN_BGM()) music_paused_time = audio_sound_get_track_position(music_inst);
+		else music_paused_time = audio_sound_get_track_position(music_inst) * 1000;
 		if(_fade == 0) {
 			audio_stop_sound(music_inst);
 		} else {
 			audio_sound_gain(music_inst, 0, _fade);
 			array_push(stop_queue, music_inst);
 		}
+		music_inst = undefined;
 	}
 }
 
@@ -168,12 +170,21 @@ function bgm_pause(_fade = 0) {
 function bgm_resume(_fade = 0) {
 	if(bgm_is_paused() && !is_undefined(music)) {
 		music_inst = audio_play_sound(music, BGM_PRIORITY, music_loop_full_track);
-		audio_sound_set_track_position(music_inst, music_paused_time);
+		if(__AriahAudioLibrary__LEGACY_USE_SECONDS_IN_BGM()) audio_sound_set_track_position(music_inst, music_paused_time);
+		else audio_sound_set_track_position(music_inst, music_paused_time/1000);
 		if(_fade > 0) audio_sound_gain(music_inst, 0, 0);
 		audio_sound_pitch(music_inst, music_pitch);
 		audio_sound_gain(music_inst, music_volume*gb_vol_bgm, _fade);
 		music_paused_time = undefined;
 	}
+}
+
+///@desc Function for getting the length of the currently playing track.
+///@returns The length of the currently playing music track (in milliseconds). ~if the legacy option to use seconds instead is enabled, this argument is in seconds.
+function bgm_get_length() {
+	if(!is_undefined(music_loop_end)) return music_loop_end;
+	if(__AriahAudioLibrary__LEGACY_USE_SECONDS_IN_BGM()) return audio_sound_length(music);
+	return audio_sound_length(music) * 1000;
 }
 
 ///@desc Function for setting the global volume of all pieces of music you could play. Unlike bgm_set_volume, this volume is not overridden when new music plays. This is recommended for game volume set by the player in a menu.
@@ -220,30 +231,37 @@ function bgm_get_pitch() {
 }
 
 ///@desc Function for setting the current position of the currently playing music.
-///@param time - The time to set.
+///@param time - The time to set (in milliseconds). ~if the legacy option to use seconds instead is enabled, this argument is in seconds.
 function bgm_set_time(_time) {
 	if(bgm_is_playing()) {
-		audio_sound_set_track_position(music_inst, _time);	
+		if(__AriahAudioLibrary__LEGACY_USE_SECONDS_IN_BGM()) audio_sound_set_track_position(music_inst, _time);	
+		else audio_sound_set_track_position(music_inst, _time/1000);
 	} else if(bgm_is_paused()) {
 		music_paused_time = _time;
 	}
 }
 
 ///@desc Function for getting the current position of the currently playing music.
-///@returns The position of the currently playing music.
+///@returns The position of the currently playing music (in milliseconds). ~if the legacy option to use seconds instead is enabled, this argument is in seconds.
 function bgm_get_time() {
 	if(bgm_is_playing()) {
-		return audio_sound_get_track_position(music_inst);	
+		if(__AriahAudioLibrary__LEGACY_USE_SECONDS_IN_BGM()) return audio_sound_get_track_position(music_inst);
+		else return audio_sound_get_track_position(music_inst) * 1000;
 	} else if(bgm_is_paused()) {
-		return music_paused_time;	
+		return music_paused_time;
 	}
 	return 0;
 }
 
 ///@desc Function for determining if music is currently playing.
+///@param [track] - The track to check whether it's playing.
 ///@returns Whether or not music is playing (true = yes)
-function bgm_is_playing() {
-	return !is_undefined(music_inst);
+function bgm_is_playing(_track = undefined) {
+	if(is_undefined(music_inst)) return false;
+	if(!is_undefined(_track)) {
+		return music == _track;
+	}
+	return true;
 }
 
 ///@desc Function for determining if music is currently paused.
@@ -639,6 +657,34 @@ function bgs_update_gain(_fade = 0) {
 	for(var i=0;i<array_length(backgrounds);i++) {
 		audio_sound_gain(background_insts[i], background_volumes[i]*gb_vol_bgs, _fade);	
 	}
+}
+
+#endregion
+
+#region Audio Listener Shtuff
+
+audio_listener_orientation(0, 0, -1, 0, 1, 0);
+
+listener = undefined;
+
+function set_listener_x(_x) {
+	x = _x;
+	listener = undefined;
+}
+
+function set_listener_y(_y) {
+	y = _y;
+	listener = undefined;
+}
+
+function set_listener_position(_x, _y) {
+	x = _x;
+	y = _y;
+	listener = undefined;
+}
+
+function set_listener_following(_object) {
+	listener = _object;	
 }
 
 #endregion

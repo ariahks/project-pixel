@@ -1,12 +1,11 @@
 {
+  "resourceType": "GMScript",
+  "resourceVersion": "1.0",
+  "name": "input_profile_auto",
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Profiles",
-    "path": "folders/Libraries/Input/Profiles.yy",
+    "name": "16  Profiles",
+    "path": "folders/Libraries/Input/16  Profiles.yy",
   },
-  "resourceVersion": "1.0",
-  "name": "input_profile_auto",
-  "tags": [],
-  "resourceType": "GMScript",
 }

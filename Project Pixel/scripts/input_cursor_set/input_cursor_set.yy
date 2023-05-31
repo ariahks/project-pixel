@@ -1,12 +1,11 @@
 {
+  "resourceType": "GMScript",
+  "resourceVersion": "1.0",
+  "name": "input_cursor_set",
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Cursor",
-    "path": "folders/Libraries/Input/Cursor.yy",
+    "name": "10  Cursor Control",
+    "path": "folders/Libraries/Input/10  Cursor Control.yy",
   },
-  "resourceVersion": "1.0",
-  "name": "input_cursor_set",
-  "tags": [],
-  "resourceType": "GMScript",
 }

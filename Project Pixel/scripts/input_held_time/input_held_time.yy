@@ -1,12 +1,11 @@
 {
+  "resourceType": "GMScript",
+  "resourceVersion": "1.0",
+  "name": "input_held_time",
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Checkers",
-    "path": "folders/Libraries/Input/Checkers.yy",
+    "name": "03  Advanced Checkers",
+    "path": "folders/Libraries/Input/03  Advanced Checkers.yy",
   },
-  "resourceVersion": "1.0",
-  "name": "input_held_time",
-  "tags": [],
-  "resourceType": "GMScript",
 }

@@ -32,9 +32,10 @@ y += _move_y;
 
 //DEBUG STUFF
 var _recent = input_check_press_most_recent();
-if(!is_undefined(_recent) && IS_DEV_BUILD) show_debug_message(_recent);
+if(!is_undefined(_recent)) log_debug(_recent);
 
 if(input_check_pressed("v") && IS_DEV_BUILD) {
+	audio.sfx_play(sfx_menu_blip_success);
 	game.data.room = room;
 	game.data.x = x;
 	game.data.y = y;

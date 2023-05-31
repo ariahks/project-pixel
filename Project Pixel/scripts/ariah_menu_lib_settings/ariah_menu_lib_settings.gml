@@ -1,4 +1,4 @@
-/* -- Ariah's Menu Library ~ Version 1.0.0 --
+/* -- Ariah's Menu Library ~ Version 1.1.0 --
  *
  * LICENSE:
  * > CC0

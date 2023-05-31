@@ -1,12 +1,11 @@
 {
+  "resourceType": "GMScript",
+  "resourceVersion": "1.0",
+  "name": "__input_finalize_verb_groups",
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "(System)",
-    "path": "folders/Libraries/Input/(System).yy",
+    "name": "Initialization",
+    "path": "folders/Libraries/Input/(System)/Initialization.yy",
   },
-  "resourceVersion": "1.0",
-  "name": "__input_finalize_verb_groups",
-  "tags": [],
-  "resourceType": "GMScript",
 }

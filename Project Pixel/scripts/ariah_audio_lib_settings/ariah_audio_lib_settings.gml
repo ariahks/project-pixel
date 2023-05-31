@@ -1,4 +1,4 @@
-/* -- Ariah's Audio Library ~ Version 1.2.0 --
+/* -- Ariah's Audio Library ~ Version 1.3.0 --
  *
  * LICENSE:
  * > CC0
@@ -12,7 +12,7 @@
  * DOCUMENTATION:
  * > Documentation may be available on my website: 'https://ariahsiwik.github.io/gmlibs/audio'
  */
- 
+
 #region Audio Priority Settings
 
 function __AriahAudioLibrary__BGM_PRIORITY() {
@@ -45,6 +45,14 @@ function __AriahAudioLibrary__FALLOFF_MAX_DIST() {
 
 function __AriahAudioLibrary__FALLOFF_FACTOR() {
 	return 1;	
+}
+
+#endregion
+
+#region Legacy Settings
+
+function __AriahAudioLibrary__LEGACY_USE_SECONDS_IN_BGM() {
+	return false;	
 }
 
 #endregion

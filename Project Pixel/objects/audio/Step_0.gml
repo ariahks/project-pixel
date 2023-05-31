@@ -20,8 +20,10 @@ for(var i=0;i<array_length(stop_queue);i++) {
 
 if(!is_undefined(music_loop_end) && bgm_is_playing()) {
 	var _pos = audio_sound_get_track_position(music_inst);
+	if(!__AriahAudioLibrary__LEGACY_USE_SECONDS_IN_BGM()) _pos *= 1000;
 	if(_pos >= music_loop_end) {
-		audio_sound_set_track_position(music_inst, _pos - music_loop_length);	
+		if(__AriahAudioLibrary__LEGACY_USE_SECONDS_IN_BGM()) audio_sound_set_track_position(music_inst, _pos - music_loop_length);	
+		else audio_sound_set_track_position(music_inst, (_pos - music_loop_length)/1000);
 	}
 }
 
@@ -44,4 +46,11 @@ for(var i=0;i<array_length(sounds);i++) {
 		
 		i--;
 	}
+}
+
+//Audio Listener Shtuff
+
+if(!is_undefined(listener) && instance_exists(listener)) {
+	x = listener.x;
+	y = listener.y;
 }

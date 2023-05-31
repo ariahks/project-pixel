@@ -68,7 +68,8 @@ if(__AriahMenuLibrary__UP() && focus) {
 			audio_play_sound(_option.blip_move, 3, false);	
 		}
 	}
-	_option.func_up();
+	if(is_undefined(_option.func_up)) page[index].func_up_default();
+	else _option.func_up();
 }
 
 if(__AriahMenuLibrary__DOWN() && focus) {
@@ -79,7 +80,8 @@ if(__AriahMenuLibrary__DOWN() && focus) {
 			audio_play_sound(_option.blip_move, 3, false);	
 		}
 	}
-	_option.func_down();
+	if(is_undefined(_option.func_down)) page[index].func_down_default();
+	else _option.func_down();
 }
 
 if(__AriahMenuLibrary__LEFT() && focus) {
@@ -90,7 +92,8 @@ if(__AriahMenuLibrary__LEFT() && focus) {
 			audio_play_sound(_option.blip_move, 3, false);	
 		}
 	}
-	_option.func_left();
+	if(is_undefined(_option.func_left)) page[index].func_left_default();
+	else _option.func_left();
 }
 
 if(__AriahMenuLibrary__RIGHT() && focus) {
@@ -101,7 +104,8 @@ if(__AriahMenuLibrary__RIGHT() && focus) {
 			audio_play_sound(_option.blip_move, 3, false);	
 		}
 	}
-	_option.func_right();
+	if(is_undefined(_option.func_right)) page[index].func_right_default();
+	else _option.func_right();
 }
 
 if(__AriahMenuLibrary__CONFIRM() && focus) {
@@ -112,7 +116,8 @@ if(__AriahMenuLibrary__CONFIRM() && focus) {
 			audio_play_sound(_option.blip_z, 3, false);	
 		}
 	}
-	_option.func_z();
+	if(is_undefined(_option.func_z)) page[index].func_z_default();
+	else _option.func_z();
 }
 
 if(__AriahMenuLibrary__CANCEL() && focus) {
@@ -123,7 +128,8 @@ if(__AriahMenuLibrary__CANCEL() && focus) {
 			audio_play_sound(_option.blip_x, 3, false);	
 		}
 	}
-	_option.func_x();
+	if(is_undefined(_option.func_x)) page[index].func_x_default();
+	else _option.func_x();
 }
 
 switch(page[index].layout) {
@@ -136,7 +142,7 @@ switch(page[index].layout) {
 			draw_set_font(page[index].options[i].font);
 			var _text = page[index].options[i].text;
 			var _op_x = page[index].coords[i][0];
-			var _op_y = page[index].coords[i][0];
+			var _op_y = page[index].coords[i][1];
 			var _op_w = string_width(_text);
 			var _op_h = string_height(_text);
 			

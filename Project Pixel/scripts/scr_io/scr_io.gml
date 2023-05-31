@@ -8,7 +8,7 @@ function string_save_to_file(_filename, _string, _base64 = false) {
 
 function string_load_from_file(_filename, _base64 = false) {
 	if(!file_exists(_filename)) {
-		show_debug_message("[WARNING] Tried to load from a non-existant file! (" + _filename + ")");
+		log_warning("Tried to load from a non-existant file! (" + _filename + ")");
 		return undefined;
 	}
 	var _buffer = buffer_load(_filename);

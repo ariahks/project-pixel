@@ -9,16 +9,23 @@ function menu_pause_create(_is_title, _fade = undefined) {
 		__title = _is_title;
 		
 		add_page(new MenuPageRows("Main")
+				.set_default_func_x(function() {
+					if(!__title) {
+						audio.sfx_play(blip_z_default);
+						game.pause_for_menu = false;
+						destroy();
+					}
+				})
 				.add_option(
 						new MenuOption("Play")
 							.set_function_init(function() {
 								if(__title) {
-									var _option = get_page("Main").get_option("Play");
+									var _option = get_option("Play", "Main");
 									var _started = game.flag.get("game_has_started");
 									if(_started) _option.set_text("Continue");
 									else _option.set_text("New Game");
 								} else {
-									get_page("Main").get_option("Play").set_text("Resume");
+									get_option("Play", "Main").set_text("Resume");
 								}
 							})
 							.set_function_z(function() {
@@ -45,7 +52,7 @@ function menu_pause_create(_is_title, _fade = undefined) {
 						new MenuOption("Quit")
 							.set_function_init(function() {
 								if(!__title) {
-									get_page("Main").get_option("Quit").set_text("Title Screen");
+									get_option("Quit", "Main").set_text("Title Screen");
 								}
 							})
 							.set_function_selected(function() {
@@ -77,21 +84,18 @@ function menu_pause_create(_is_title, _fade = undefined) {
 		);
 	
 		add_page(new MenuPageRows("Settings")
+				.set_default_func_x(function() {
+					set_page("Main");
+				})
 				.add_option(
 						new MenuOption("Game")
 							.set_function_z(function() {
 								set_page("Game");
 							})
-							.set_function_x(function() {
-								set_page("Main");	
-							})
 						,
 						new MenuOption("Video")
 							.set_function_z(function() {
 								set_page("Video");
-							})
-							.set_function_x(function() {
-								set_page("Main");	
 							})
 				)
 				.add_option(
@@ -99,16 +103,10 @@ function menu_pause_create(_is_title, _fade = undefined) {
 							.set_function_z(function() {
 								set_page("Controls");
 							})
-							.set_function_x(function() {
-								set_page("Main");	
-							})
 						,
 						new MenuOption("Audio")
 							.set_function_z(function() {
 								set_page("Audio");
-							})
-							.set_function_x(function() {
-								set_page("Main");	
 							})
 				)
 				.add_option(
@@ -116,21 +114,21 @@ function menu_pause_create(_is_title, _fade = undefined) {
 							.set_function_z(function() {
 								set_page("Main");	
 							})
-							.set_function_x(function() {
-								set_page("Main");	
-							})
-							.set_blip_z(sfx_menu_blip_x)
+							.set_blip_z(blip_x_default)
 				)
 		);
 	
 		add_page(new MenuPageRows("Game")
+				.set_default_func_x(function() {
+					set_page("Settings");
+				})
 				.add_option(
 						new MenuOption("Reset Save Data")
 							.set_color(#bb0000, #880000)
 							.set_color_selected(#ff0000)
 							.set_function_init(function() {
 								if(!__title) {
-									get_page("Game").get_option("Reset Save Data")
+									get_option("Reset Save Data", "Game")
 											.set_color(#888888, #444444)
 											.set_selectable(false);
 									select_option("Back", "Game");
@@ -139,11 +137,8 @@ function menu_pause_create(_is_title, _fade = undefined) {
 							.set_function_z(function() {
 								game.reset_save_data();
 								game.save();
-								get_page("Main").get_option("Play").set_text("New Game");
+								get_option("Play", "Main").set_text("New Game");
 								set_page("Reset");
-							})
-							.set_function_x(function() {
-								set_page("Settings");	
 							})
 							.set_blip_z(sfx_menu_blip_success)
 				)
@@ -152,10 +147,7 @@ function menu_pause_create(_is_title, _fade = undefined) {
 							.set_function_z(function() {
 								set_page("Settings");	
 							})
-							.set_function_x(function() {
-								set_page("Settings");	
-							})
-							.set_blip_z(sfx_menu_blip_x)
+							.set_blip_z(blip_x_default)
 				)
 		);
 	
@@ -175,6 +167,9 @@ function menu_pause_create(_is_title, _fade = undefined) {
 		);
 	
 		add_page(new MenuPageRows("Video")
+				.set_default_func_x(function() {
+					set_page("Settings");
+				})
 				.add_option(
 						new MenuOption("Scale")
 							.set_function_init(function() {
@@ -182,7 +177,7 @@ function menu_pause_create(_is_title, _fade = undefined) {
 								if(game.settings.fullscreen) {
 									var _max = min(display_get_width() / GAME_WIDTH, display_get_height() / GAME_HEIGHT);
 									_text = string(_max * GAME_WIDTH) + " x " + string(_max * GAME_HEIGHT);
-									get_page("Video").get_option("Scale")
+									get_option("Scale", "Video")
 											.set_color(#888888, #444444)
 											.set_selectable(false);
 									select_option("Fullscreen", "Video");
@@ -192,7 +187,7 @@ function menu_pause_create(_is_title, _fade = undefined) {
 									_text += string(game.settings.scale * GAME_WIDTH) + " x " + string(game.settings.scale * GAME_HEIGHT);
 									_text += game.settings.scale < _max ? " >" : "  ";
 								}
-								get_page("Video").get_option("Scale").set_text(_text);
+								get_option("Scale", "Video").set_text(_text);
 							})
 							.set_function_left(function() {
 								if(game.settings.scale == 1) return;
@@ -223,16 +218,13 @@ function menu_pause_create(_is_title, _fade = undefined) {
 								get_current_option().set_text(_text);
 								game.settings_save();
 							})
-							.set_function_x(function() {
-								set_page("Settings");	
-							})
 							.set_blip_z(undefined)
 				)
 				.add_option(
 						new MenuOption("Fullscreen")
 							.set_function_init(function() {
 								var _text = game.settings.fullscreen ? "< Fullscreen  " : "  Windowed >";
-								get_page("Video").get_option("Fullscreen").set_text(_text);
+								get_option("Fullscreen", "Video").set_text(_text);
 							})
 							.set_function_left(function() {
 								if(!game.settings.fullscreen) return;
@@ -270,9 +262,6 @@ function menu_pause_create(_is_title, _fade = undefined) {
 								get_current_option().set_text("< Fullscreen  ");
 								game.settings_save();
 							})
-							.set_function_x(function() {
-								set_page("Settings");	
-							})
 							.set_blip_z(undefined)
 				)
 				.add_option(
@@ -280,39 +269,33 @@ function menu_pause_create(_is_title, _fade = undefined) {
 							.set_function_z(function() {
 								set_page("Settings");	
 							})
-							.set_function_x(function() {
-								set_page("Settings");	
-							})
-							.set_blip_z(sfx_menu_blip_x)
+							.set_blip_z(blip_x_default)
 				)
 		);
 	
 		add_page(new MenuPageRows("Controls")
+				.set_default_func_x(function() {
+					set_page("Settings");
+				})
 				.add_option(
 						new MenuOption("Keyboard")
-							.set_function_x(function() {
-								set_page("Settings");	
-							})
 				)
 				.add_option(
 						new MenuOption("Gamepad")
-							.set_function_x(function() {
-								set_page("Settings");	
-							})
 				)
 				.add_option(
 						new MenuOption("Back")
 							.set_function_z(function() {
 								set_page("Settings");	
 							})
-							.set_function_x(function() {
-								set_page("Settings");	
-							})
-							.set_blip_z(sfx_menu_blip_x)
+							.set_blip_z(blip_x_default)
 				)
 		);
 	
 		add_page(new MenuPageRows("Audio")
+				.set_default_func_x(function() {
+					set_page("Settings");
+				})
 				.add_option(
 						new MenuOption("BGM_Label", "Music")
 							.set_selectable(false)
@@ -327,7 +310,7 @@ function menu_pause_create(_is_title, _fade = undefined) {
 								var _text = game.settings.vol_bgm > 0 ? "< " : "  ";
 								_text += string(game.settings.vol_bgm);
 								_text += game.settings.vol_bgm < 100 ? " >" : "  ";
-								get_page("Audio").get_option("BGM").set_text(_text);
+								get_option("BGM", "Audio").set_text(_text);
 							})
 							.set_function_left(function() {
 								if(game.settings.vol_bgm == 0) return;
@@ -353,9 +336,6 @@ function menu_pause_create(_is_title, _fade = undefined) {
 								get_current_option().set_text(_text);
 								game.settings_save();
 							})
-							.set_function_x(function() {
-								set_page("Settings");	
-							})
 				)
 				.add_option(
 						new MenuOption("SFX_Label", "Sound Effects")
@@ -371,7 +351,7 @@ function menu_pause_create(_is_title, _fade = undefined) {
 								var _text = game.settings.vol_sfx > 0 ? "< " : "  ";
 								_text += string(game.settings.vol_sfx);
 								_text += game.settings.vol_sfx < 100 ? " >" : "  ";
-								get_page("Audio").get_option("SFX").set_text(_text);
+								get_option("SFX", "Audio").set_text(_text);
 							})
 							.set_function_left(function() {
 								if(game.settings.vol_sfx == 0) return;
@@ -397,9 +377,6 @@ function menu_pause_create(_is_title, _fade = undefined) {
 								get_current_option().set_text(_text);
 								game.settings_save();
 							})
-							.set_function_x(function() {
-								set_page("Settings");	
-							})
 				)
 				.add_option(
 						new MenuOption("BGS_Label", "Background Sounds")
@@ -415,7 +392,7 @@ function menu_pause_create(_is_title, _fade = undefined) {
 								var _text = game.settings.vol_bgs > 0 ? "< " : "  ";
 								_text += string(game.settings.vol_bgs);
 								_text += game.settings.vol_bgs < 100 ? " >" : "  ";
-								get_page("Audio").get_option("BGS").set_text(_text);
+								get_option("BGS", "Audio").set_text(_text);
 							})
 							.set_function_left(function() {
 								if(game.settings.vol_bgs == 0) return;
@@ -441,19 +418,13 @@ function menu_pause_create(_is_title, _fade = undefined) {
 								get_current_option().set_text(_text);
 								game.settings_save();
 							})
-							.set_function_x(function() {
-								set_page("Settings");	
-							})
 				)
 				.add_option(
 						new MenuOption("Back")
 							.set_function_z(function() {
 								set_page("Settings");	
 							})
-							.set_function_x(function() {
-								set_page("Settings");	
-							})
-							.set_blip_z(sfx_menu_blip_x)
+							.set_blip_z(blip_x_default)
 				)
 		);
 	}	

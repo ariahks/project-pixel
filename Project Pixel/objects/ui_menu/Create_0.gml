@@ -1,5 +1,5 @@
 SIGNATURE = "758e6af20bcc929e4f9a24490425a26d";
-VERSION = "394107e54b7afdd84ab8050a43f90fb1";
+VERSION = "a4134063020957b30a9e9c07b27f7d1f";
 
 #region Constants
 
@@ -15,12 +15,12 @@ __USE_ARIAH_AUDIO_LIB = function() {
 		}
 	}
 	return false;
-};
+}
 
-__DIRECTION_RIGHT = 0;
-__DIRECTION_UP = 1;
-__DIRECTION_LEFT = 2;
-__DIRECTION_DOWN = 3;
+DIRECTION_RIGHT = 0;
+DIRECTION_UP = 1;
+DIRECTION_LEFT = 2;
+DIRECTION_DOWN = 3;
 
 #endregion
 
@@ -101,6 +101,32 @@ function request_focus() {
 
 function has_focus() {
 	return focus;	
+}
+
+function get_option(_option, _page = undefined) {
+	var _index = index;
+	if(!is_undefined(_page)) {
+		for(var i=0;i<array_length(page);i++) {
+			if(page[i].name == _page) _index = i;	
+		}
+	}
+	if(page[_index].layout == "free") {
+		for(var i=0;i<array_length(page[_index].options);i++) {
+			var _o = page[_index].options[i];
+			if(_o.name == _option) {
+				return _o;
+			}
+		}
+	} else {
+		for(var i=0;i<array_length(page[_index].options);i++) {
+			for(var j=0;j<array_length(page[_index].options[i]);j++) {
+				var _o = page[_index].options[i][j];
+				if(_o.name == _option) {
+					return _o;
+				}
+			}
+		}
+	}
 }
 
 function select_option(_option, _page = undefined) {
@@ -295,6 +321,38 @@ function MenuPage(_name) constructor {
 		return self;
 	};
 	
+	set_default_func_z = function(_func) {
+		func_z_default = _func;
+		return self;
+	}
+	
+	set_default_func_x = function(_func) {
+		func_x_default = _func;
+		return self;
+	}
+	
+	set_default_func_up = function(_func) {
+		func_up_default = _func;
+		return self;
+	}
+	
+	set_default_func_down = function(_func) {
+		func_down_default = _func;
+		return self;
+	}
+	
+	set_default_func_left = function(_func) {
+		func_left_default = _func;
+		return self;
+	}
+	
+	set_default_func_right = function(_func) {
+		func_right_default = _func;
+		return self;
+	}
+	
+	func_z_default = function() { };
+	func_x_default = function() { };
 	func_up_default = function() { };
 	func_down_default = function() { };
 	func_left_default = function() { };
@@ -312,10 +370,6 @@ function MenuPageRows(_name) : MenuPage(_name) constructor {
 		var _row = [];
 		for(var i=0;i<argument_count;i++) {
 			var _option = argument[i];
-			if(is_undefined(_option.func_up)) _option.set_function_up(func_up_default);
-			if(is_undefined(_option.func_down)) _option.set_function_down(func_down_default);
-			if(is_undefined(_option.func_left)) _option.set_function_left(func_left_default);
-			if(is_undefined(_option.func_right)) _option.set_function_right(func_right_default);
 			array_push(_row, argument[i]);
 		}
 		array_push(options, _row);
@@ -416,6 +470,7 @@ function MenuPageRows(_name) : MenuPage(_name) constructor {
 				if(options[i][j].name == _option) return options[i][j];	
 			}
 		}
+		return undefined;
 	};
 }
 
@@ -428,10 +483,6 @@ function MenuPageColumns(_name) : MenuPage(_name) constructor {
 		var _column = [];
 		for(var i=0;i<argument_count;i++) {
 			var _option = argument[i];
-			if(is_undefined(_option.func_up)) _option.set_function_up(func_up_default);
-			if(is_undefined(_option.func_down)) _option.set_function_down(func_down_default);
-			if(is_undefined(_option.func_left)) _option.set_function_left(func_left_default);
-			if(is_undefined(_option.func_right)) _option.set_function_right(func_right_default);
 			array_push(_column, argument[i]);
 		}
 		array_push(options, _column);
@@ -545,19 +596,34 @@ function MenuPageFree(_name) : MenuPage(_name) constructor {
 	layout = "free";
 	
 	add_option = function(_option, _x, _y, _halign = "center", _valign = "middle") {
-		if(is_undefined(_option.func_up)) _option.set_function_up(func_up_default);
-		if(is_undefined(_option.func_down)) _option.set_function_down(func_down_default);
-		if(is_undefined(_option.func_left)) _option.set_function_left(func_left_default);
-		if(is_undefined(_option.func_right)) _option.set_function_right(func_right_default);
 		array_push(options, _option);
 		array_push(coords, [_x, _y]);
-		array_push(mapping, [undefined, undefined, undefined, undefined]);
+		array_push(mapping, array_create(4, undefined));
 		array_push(halign, _halign);
 		array_push(valign, _valign);
 		return self;
 	};
 	
 	set_mapping = function(_option_from, _direction, _option_to) {
+		if(is_string(_direction)) {
+			switch(string_lower(_direction)) {
+				case "u":
+				case "up":
+					_direction = DIRECTION_UP;
+					break;
+				case "d":
+				case "down":
+					_direction = DIRECTION_DOWN;
+					break;
+				case "l":
+				case "left":
+					_direction = DIRECTION_LEFT;
+					break;
+				case "r":
+				case "right":
+					_direction = DIRECTION_RIGHT;
+			}
+		}
 		for(var i=0;i<array_length(options);i++) {
 			if(options[i].name == _option_from) {
 				for(var j=0;j<array_length(options);j++) {
@@ -576,7 +642,7 @@ function MenuPageFree(_name) : MenuPage(_name) constructor {
 		if(!other.page[other.index].options[other.page[other.index].pos].move_up_enabled) return; 
 		
 		var _pos = other.page[other.index].pos;
-		if(is_undefined(mapping[_pos][__DIRECTION_UP])) {
+		if(is_undefined(mapping[_pos][DIRECTION_UP])) {
 			var _x0 = coords[_pos][0];
 			var _y0 = coords[_pos][1];
 			
@@ -623,7 +689,7 @@ function MenuPageFree(_name) : MenuPage(_name) constructor {
 			}
 		} else {
 			options[_pos].func_leave();
-			var _new_pos = mapping[_pos][__DIRECTION_UP];
+			var _new_pos = mapping[_pos][DIRECTION_UP];
 			options[_new_pos].func_enter();
 			other.page[other.index].pos = _new_pos;
 		}
@@ -633,7 +699,7 @@ function MenuPageFree(_name) : MenuPage(_name) constructor {
 		if(!other.page[other.index].options[other.page[other.index].pos].move_down_enabled) return;
 		
 		var _pos = other.page[other.index].pos;
-		if(is_undefined(mapping[_pos][__DIRECTION_DOWN])) {
+		if(is_undefined(mapping[_pos][DIRECTION_DOWN])) {
 			var _x0 = coords[_pos][0];
 			var _y0 = coords[_pos][1];
 			
@@ -680,7 +746,7 @@ function MenuPageFree(_name) : MenuPage(_name) constructor {
 			}
 		} else {
 			options[_pos].func_leave();
-			var _new_pos = mapping[_pos][__DIRECTION_DOWN];
+			var _new_pos = mapping[_pos][DIRECTION_DOWN];
 			options[_new_pos].func_enter();
 			other.page[other.index].pos = _new_pos;
 		}
@@ -689,7 +755,7 @@ function MenuPageFree(_name) : MenuPage(_name) constructor {
 		if(!other.page[other.index].options[other.page[other.index].pos].move_left_enabled) return;
 		
 		var _pos = other.page[other.index].pos;
-		if(is_undefined(mapping[_pos][__DIRECTION_LEFT])) {
+		if(is_undefined(mapping[_pos][DIRECTION_LEFT])) {
 			var _x0 = coords[_pos][0];
 			var _y0 = coords[_pos][1];
 			
@@ -736,7 +802,7 @@ function MenuPageFree(_name) : MenuPage(_name) constructor {
 			}
 		} else {
 			options[_pos].func_leave();
-			var _new_pos = mapping[_pos][__DIRECTION_LEFT];
+			var _new_pos = mapping[_pos][DIRECTION_LEFT];
 			options[_new_pos].func_enter();
 			other.page[other.index].pos = _new_pos;
 		}
@@ -746,7 +812,7 @@ function MenuPageFree(_name) : MenuPage(_name) constructor {
 		if(!other.page[other.index].options[other.page[other.index].pos].move_right_enabled) return;
 		
 		var _pos = other.page[other.index].pos;
-		if(is_undefined(mapping[_pos][__DIRECTION_RIGHT])) {
+		if(is_undefined(mapping[_pos][DIRECTION_RIGHT])) {
 			var _x0 = coords[_pos][0];
 			var _y0 = coords[_pos][1];
 			
@@ -793,7 +859,7 @@ function MenuPageFree(_name) : MenuPage(_name) constructor {
 			}
 		} else {
 			options[_pos].func_leave();
-			var _new_pos = mapping[_pos][__DIRECTION_RIGHT];
+			var _new_pos = mapping[_pos][DIRECTION_RIGHT];
 			options[_new_pos].func_enter();
 			other.page[other.index].pos = _new_pos;
 		}
@@ -815,8 +881,8 @@ function MenuOption(_name, _text = undefined) constructor {
 	name = _name;
 	text = _text ?? _name;
 	
-	func_z = function() { };
-	func_x = function() { };
+	func_z = undefined;
+	func_x = undefined;
 	func_up = undefined;
 	func_down = undefined;
 	func_left = undefined;
